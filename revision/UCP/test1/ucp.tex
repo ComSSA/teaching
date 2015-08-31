@@ -1,0 +1,579 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{parskip}
+\usepackage{listings}
+\usepackage{enumerate}
+\usepackage{textcomp}
+\usepackage[usenames,dvipsnames]{color}
+\lstset{basicstyle=\ttfamily, basewidth=0.5em, upquote=true}
+
+\title{ComSSA teaches UCP: test 1 revision}
+\date{September 1, 2015}
+
+\pagenumbering{arabic}
+
+\begin{document}
+
+\maketitle
+
+Questions in UCP tests and exams follow a predictable format, and each
+of the sections below represent a kind of question that you may be
+asked in an assessment, you may have seen in a practical, or may
+otherwise improve your understanding.
+
+To better prepare you for your assessments, the questions that follow
+are often slightly more difficult than you may expect to encounter, but
+they will help hone your skills and ensure that you pay extra attention
+when answering the real questions.
+
+Dave likes to write tricky questions with subtle pitfalls, many of
+which test your understanding of \emph{entirely valid code} that will
+compile but either run incorrectly, run surprisingly, or be otherwise
+less than ideal. Watch out for these warning signs:
+
+\begin{itemize}
+	\item Preprocessor macros defined
+	\begin{itemize}
+		\item without parentheses around each use of a parameter
+		\item without parentheses around the resultant expression
+		\item with a semicolon at the end, when there shouldn't be
+	\end{itemize}
+	\item Loops and other control structures in which
+	\begin{itemize}
+		\item counters or other key variables are modified
+		\item pointers are modified while they're being used
+	\end{itemize}
+	\item Unusual uses of control structures such as
+	\begin{itemize}
+		\item \texttt{case} statements without
+		      \texttt{break} statements
+		\item \texttt{for} and \texttt{while} loops with
+		      \texttt{break} and \texttt{continue} statements
+	\end{itemize}
+	\item Variables that are modified once and never used again
+\end{itemize}
+
+The following are some other hints that may be useful for today:
+
+\begin{itemize}
+	\item A semicolon on its own is called a ``null statement'' and
+	      it does nothing at all
+	\item \texttt{x = y} is an expression that ``returns''
+	      the new value of \texttt{x}
+	\item \texttt{v = w = x = y;} is thus equivalent to
+	      \texttt{x = y; w = x; v = w;}
+\end{itemize}
+
+Questions marked * are probably beyond the scope of the assessment.
+
+\newpage
+
+\section{Terminology}
+
+Explain the meaning of the following:
+
+\begin{enumerate}[a)]
+	\item \texttt{[17065012@saeshell01p \textasciitilde]\$ ./a \&}
+	\item \lstinline@alias gcc='gcc -Wall -ansi -pedantic'@
+	\item \lstinline@#define E 2.71828183f@
+	\item \lstinline@#define TRIANGLE(b, h) ((b) * (h) / 2)@
+	\item \lstinline@#include <header.h>@
+	\item \lstinline@#include "header.h"@
+	\item \lstinline@#ifdef DEBUG@\\
+	      \lstinline@        #define debug(s) printf("%s\n", s)@\\
+	      \lstinline@#else@\\
+	      \lstinline@        #define debug(s)@\\
+	      \lstinline@#endif@
+	\item \lstinline@#ifndef HEADER_H@\\
+	      \lstinline@#define HEADER_H@\\
+	      \lstinline@...@\\
+	      \lstinline@#endif@
+	\item \lstinline@int *foo, bar;@
+	\item \lstinline@double foo, bar = 42.0;@
+	\item \lstinline@unsigned char foo;@
+	\item[* l)] \lstinline@extern int foo;@
+	\item[* m)] \lstinline@extern int foo();@
+	\item[n)] \lstinline@int foo(void);@
+	\item[o)] \lstinline@int foo(int, int, int);@
+	\item[p)] \lstinline@int foo(int, int y, int z);@
+	\item[q)] \lstinline@static int foo(int x) { return x * x; }@
+	\item[r)] \lstinline@int **foo(void);@
+	\item[s)] \lstinline@int *(*foo)(void);@
+	\item[t)] \lstinline@int (**foo)(void);@
+	\item[u)] \lstinline@typedef int *(*foo)(void);@
+	\item[* v)]
+	      \lstinline@typedef int *(*foo(float (*)(float)))(void);@
+	\item[w)] \lstinline@int **foo = (int **) malloc(sizeof(int *));@
+	\item[x)] \lstinline@int *foo; ... if (!foo) ...@
+	\item[y)] \lstinline@int *foo; ... if (!*foo) ...@
+\end{enumerate}
+
+\newpage
+
+\section{Discussion}
+
+\begin{enumerate}[a)]
+	\item Why should you put forward declarations in header files?
+	\item Which of the following should reside in a header file and
+	      why?
+	\begin{enumerate}[i)]
+		\item[* a)] Global variable declaration
+		      (not \texttt{extern})
+		\item[* b)] Global variable declaration
+		      (\texttt{extern})
+		\item[c)] Function declaration (not \texttt{static})
+		\item[d)] Function declaration (\texttt{static})
+		\item[e)] Function definition (not \texttt{static})
+		\item[f)] Function definition (\texttt{static})
+		\item[g)] \texttt{typedef} declaration
+		\item[h)] \texttt{\#include} directive
+		\item[i)] \texttt{\#include} guard
+	\end{enumerate}
+	\item What is the return type of \texttt{main()} and why?
+	\item What is the return type of \texttt{malloc()} and why?
+	\item What is the parameter type of \texttt{free()} and why?
+	\item What is an L-value?
+	\item What kinds of memory errors can \texttt{valgrind} catch?
+	\item Why is it a good idea to set a pointer to \texttt{NULL}
+	      after freeing it?
+\end{enumerate}
+
+\newpage
+
+\section{Pointer diagrams}
+
+Say you have the following declarations:
+
+\begin{lstlisting}
+int x = 13;
+int y = 42;
+int *p = NULL;
+int *q = NULL;
+int **s = NULL;
+int **t = NULL;
+\end{lstlisting}
+
+For each of the following code snippets, draw a diagram showing all
+pointer relationships created, and state the resulting values of
+\texttt{x} and \texttt{y}. Assume that the declarations ``reset''
+between questions --- in other words, the questions are independent of
+one another.
+
+a)
+
+% t -> q -> y
+% p -> x
+% (x, y) = (42, 13)
+% y += y - x;
+% (x, y) = (42, -16)
+
+\begin{lstlisting}
+int z;
+t = &q;
+q = &y;
+p = &x;
+z = x;
+x = y;
+y = z;
+*q += **t - *p;
+\end{lstlisting}
+
+* b)
+
+% (p) -> malloc [ ? ]
+% (q) -> malloc [ 42 ]
+% (s, t) -> malloc [ q ]
+% x = 42 + 42;
+% (x, y) = (84, 42)
+
+\begin{lstlisting}
+p = (int *) malloc(sizeof(int));
+q = (int *) malloc(sizeof(int));
+s = t = (int **) malloc(sizeof(int *));
+*s = p;
+*t = q;
+**s = x;
+**t = y;
+x = **s + **t;
+\end{lstlisting}
+
+* c)
+
+% 13 / 4 == 3
+% 42 / 4 == 10
+% i == 0 < 10 (TRUE)
+% i == 1 < 3 (TRUE)
+% i == 2 < 10 (TRUE)
+% i == 3 < 3 (FALSE)
+% swap (s, t) three times
+% s -> p -> x
+% t -> q -> y
+% x *= 2;
+% (x, y) == (26, 42)
+
+\begin{lstlisting}
+int **h, i;
+p = &x;
+q = &y;
+s = &q;
+t = &p;
+for (i = 0; i < **s / 4; i++) {
+	h = s;
+	s = t;
+	t = h;
+}
+**s *= 2;
+\end{lstlisting}
+
+\newpage
+
+\section{Outputs of C programs}
+
+For each of the following C programs, determine what will be sent to
+\texttt{stdout}.
+
+a) % Dave's classic macro trick question: even
+
+\begin{lstlisting}
+#include <stdio.h>
+#define ODD(number) (number % 2 == 1)
+
+int main(void) {
+	if (ODD(2 + 2))
+		printf("odd\n");
+	else
+		printf("even\n");
+	return 0;
+}
+\end{lstlisting}
+
+b) % 2\n4\n8\n...512\n1024\n
+
+\begin{lstlisting}
+#include <stdio.h>
+
+void foo(void *p) {
+	* (int *) p *= 2;
+	printf("%d\n", * (int *) p);
+}
+
+int main(void) {
+	int i = 1, j = 1;
+	do {
+		i++;
+		foo((void *) &j);
+	} while (i <= 10);
+	return 0;
+}
+\end{lstlisting}
+
+* c) % Recursive factorial function: 120
+
+\begin{lstlisting}
+#include <stdio.h>
+
+double foo(unsigned int x) {
+	if (x < 2)
+		return 1;
+	else
+		return foo(x - 1) * (double) x;
+}
+
+int main(void) {
+	printf("%.0f\n", foo(5));
+	return 0;
+}
+\end{lstlisting}
+
+\newpage
+
+\section{Error inspection}
+
+Each of the following code snippets contains an error. Explain what is
+wrong. (You don't need to show how to fix it, but you can if it will
+assist your explanation.)
+
+a) % Missing forward declaration for square()
+
+\begin{lstlisting}
+double cube(double x) {
+	return x * square(x);
+}
+
+double square(double x) {
+	return x * x;
+}
+\end{lstlisting}
+
+b) % Integer swapping function
+
+\begin{lstlisting}
+void swap(int a, int b) {
+	int t;
+	t = a;
+	a = b;
+	b = t;
+}
+\end{lstlisting}
+
+c) % Extraneous semicolon in the macro replacement
+
+\begin{lstlisting}
+#include <stdio.h>
+#define PRINT_NUMBER(x) printf("%.17f", x);
+
+void foo(int condition) {
+	if (condition)
+		PRINT_NUMBER(1.0 / 3.0);
+	else
+		PRINT_NUMBER(1.0 / 7.0);
+}
+\end{lstlisting}
+
+\newpage
+
+\section{Effects of C functions}
+
+Describe the effect of the following functions, using examples as
+needed:
+
+a)
+
+\begin{lstlisting}
+typedef void (*callback)(void *);
+void fun0(void *);
+void fun1(void *);
+void fun2(void *);
+void fun3(void *);
+
+callback foo(void) {
+	int bar;
+	scanf("%d", &bar);
+	switch (bar) {
+		case 1:
+			return &fun1;
+		case 2:
+			return &fun2;
+		case 3:
+			return &fun3;
+		default:
+			return &fun0;
+	}
+}
+\end{lstlisting}
+
+b)
+
+\begin{lstlisting}
+int foo(void) {
+	char bar;
+	int baz = 0;
+	do {
+		scanf("%c", &bar);
+		if (bar >= '0' && bar <= '9')
+			baz = (baz * 16) + (bar - '0');
+		if (bar >= 'A' && bar <= 'F')
+			baz = (baz * 16) + 10 + (bar - 'A');
+		if (bar >= 'a' && bar <= 'f')
+			baz = (baz * 16) + 10 + (bar - 'a');
+	} while (
+		(bar >= '0' && bar <= '9') ||
+		(bar >= 'A' && bar <= 'F') ||
+		(bar >= 'a' && bar <= 'f')
+	);
+	return baz;
+}
+\end{lstlisting}
+
+\newpage
+
+\section{Makefiles and dependencies}
+
+Consider a chat client and server made up of the following C files:
+
+\begin{minipage}{.3\textwidth}
+\begin{lstlisting}[caption=client.c,frame=tlrb]{Name}
+#include "client.h"
+#include "network.h"
+
+...
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}{.3\textwidth}
+\begin{lstlisting}[caption=server.c,frame=tlrb]{Name}
+#include "server.h"
+#include "network.h"
+
+...
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}{.3\textwidth}
+\begin{lstlisting}[caption=network.c,frame=tlrb]{Name}
+#include "network.h"
+#define PORT 6697
+
+...
+\end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{.3\textwidth}
+\begin{lstlisting}[caption=client.h,frame=tlrb]{Name}
+#include "interface.h"
+
+...
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}{.3\textwidth}
+\begin{lstlisting}[caption=server.h,frame=tlrb]{Name}
+#include <event.h>
+
+...
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}{.3\textwidth}
+\begin{lstlisting}[caption=network.h,frame=tlrb]{Name}
+#include <socket.h>
+
+...
+\end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{.3\textwidth}
+\begin{lstlisting}[caption=interface.c,frame=tlrb]{Name}
+#include "interface.h"
+
+...
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}{.3\textwidth}
+\begin{lstlisting}[caption=interface.h,frame=tlrb]{Name}
+#include <curses.h>
+
+...
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}{.3\textwidth}
+\begin{lstlisting}[caption=common.h,frame=tlrb]{Name}
+#include <stdlib.h>
+
+#define VERSION 4.2.0
+\end{lstlisting}
+\end{minipage}
+
+\begin{enumerate}[a)]
+	\item What files would serve as targets in a makefile, and why?
+	\item What are the dependencies for each target, and why?
+	\item If the file \texttt{interface.h} changes, which files
+	      would need to be recompiled, and how does make figure
+	      this out?
+	\item Produce a suitable makefile for this project. Make good
+	      use of makefile variables, and include a suitable
+	      “clean” rule. The executable files should be named
+	      \texttt{client} and \texttt{server}.
+\end{enumerate}
+
+\newpage
+
+\section{Export pointers and function pointers}
+
+You’ve been asked to help write code for a simple video game with an
+overhead two-dimensional display. The game consists of a grid of
+positions $(x, y)$ where $1 \leq x \leq 80$ and $1 \leq y \leq 20$.
+The player’s character may reside in any of the 1600 $(x, y)$ pairs,
+except where there is an object in the way, and the character must
+“wrap around” to an opposite side when the player tries to move beyond
+the boundaries provided.
+
+Your task is to write a function called \texttt{keyboard} that is
+called whenever the player presses a key to move their character. The
+key will be given to you in the form of a \texttt{char}, and will be
+\texttt{\textquotesingle{}h\textquotesingle},
+\texttt{\textquotesingle{}j\textquotesingle},
+\texttt{\textquotesingle{}k\textquotesingle}, or
+\texttt{\textquotesingle{}l\textquotesingle} to move left, down, up, or
+right respectively. Except for wrapping around an edge, either $x$ or
+$y$ should change by $\pm 1$ when a player successfully moves in any
+direction.
+
+You may assume that the following constants have already been written:
+
+\begin{lstlisting}
+#define WIDTH 80
+#define HEIGHT 20
+\end{lstlisting}
+
+Your function must match the following prototype:
+
+\begin{lstlisting}
+void keyboard(
+	char key,
+	void (*location)(int *x, int *y),
+	int (*occupied)(int x, int y),
+	void (*move)(int x, int y)
+);
+\end{lstlisting}
+
+You may assume that the three function pointer parameters will be
+supplied with valid pointers to functions that satisfy the behaviours
+below.
+
+\texttt{location} exports the player character’s current location using
+the pointers \texttt{x} and \texttt{y} supplied by the caller.
+\texttt{occupied} returns \texttt{1} if the space at $(x, y)$ is
+occupied, and \texttt{0} if the space is not occupied. \texttt{move}
+unconditionally moves the player’s character to the space at $(x, y)$,
+without checking or validating anything about the location given.
+
+If the player presses any key that wasn’t mentioned above, your
+function should do nothing. Otherwise, your function should first check
+to see whether or not the player is trying to move beyond an edge.
+Based on that, your function should then check to see whether the
+target location is occupied. If not, your function should move the
+player’s character to the target location.
+
+\newpage
+
+\section{Memory usage*}
+
+For each of the following code snippets, state how much additional
+memory would be used at runtime if you were to add them to a program.
+You may assume that none of the functions are being called ``right
+now'', so the stack is not affected, and that:
+
+\begin{itemize}
+	\item the size of any \texttt{int} is 4 bytes
+	\item the size of any pointer is 8 bytes
+	\item the size of any function is 30 bytes
+\end{itemize}
+
+a) % 0 + 0 + 30 = 30 bytes
+
+\begin{lstlisting}
+extern int errno;
+char *strerror(int errnum);
+
+int foo(int bar) {
+	if (some_syscall(bar) == -1) {
+		fprintf(stderr, "%s\n", strerror(errno));
+		return errno;
+	}
+	return 0;
+}
+\end{lstlisting}
+
+b) % 0 + 8 + 0 + 30 + 8 + 0 = 46 bytes
+
+\begin{lstlisting}
+extern int foo;
+int *bar;
+int *baz(void);
+int *qux(void) {
+	...
+}
+int (*bat)(void);
+typedef int (*cat)(void);
+\end{lstlisting}
+
+\end{document}
