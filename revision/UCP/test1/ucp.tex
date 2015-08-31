@@ -138,6 +138,19 @@ Explain the meaning of the following:
 	\item What kinds of memory errors can \texttt{valgrind} catch?
 	\item Why is it a good idea to set a pointer to \texttt{NULL}
 	      after freeing it?
+	\item If you write a \texttt{bash} alias to supply options like
+	      \texttt{-Wall} to \texttt{gcc}, do you still need to
+	      specify those options in a \texttt{CFLAGS} variable in a
+	      Makefile? Why or why not?
+	\item In the shell script snippet below, will changing the
+	      value of \texttt{foo} in the third line have any effect
+	      on the command line arguments of \texttt{bar}? Why or why
+	      not?
+	\begin{lstlisting}
+foo=hello
+./bar $foo &
+foo=goodbye
+	\end{lstlisting}
 \end{enumerate}
 
 \newpage
