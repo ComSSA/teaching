@@ -335,13 +335,10 @@ c) % Extraneous semicolon in the macro replacement
 
 \begin{lstlisting}
 #include <stdio.h>
-#define PRINT_NUMBER(x) printf("%.17f", x);
+#define ADD(x, y) (x + y);
 
-void foo(int condition) {
-	if (condition)
-		PRINT_NUMBER(1.0 / 3.0);
-	else
-		PRINT_NUMBER(1.0 / 7.0);
+void foo(void) {
+	printf("%d\n", ADD(9, 4));
 }
 \end{lstlisting}
 
