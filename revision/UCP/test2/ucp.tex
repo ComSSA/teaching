@@ -1,0 +1,258 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{parskip}
+\usepackage{listings}
+\usepackage{enumerate}
+\usepackage{textcomp}
+\usepackage{textgreek}
+\usepackage[usenames,dvipsnames]{color}
+\lstset{basicstyle=\ttfamily, basewidth=0.5em, upquote=true}
+
+\title{ComSSA teaches UCP: test 2 revision}
+\date{October 10, 2015}
+
+\pagenumbering{arabic}
+
+\begin{document}
+
+\maketitle
+
+Questions in UCP tests and exams follow a predictable format, and each
+of the sections below represent a kind of question that you may be
+asked in an assessment, you may have seen in a practical, or may
+otherwise improve your understanding.
+
+To better prepare you for your assessments, the questions that follow
+are often slightly more difficult than you may expect to encounter, but
+they will help hone your skills and ensure that you pay extra attention
+when answering the real questions.
+
+Dave likes to write tricky questions with subtle pitfalls, many of
+which test your understanding of \emph{entirely valid code} that will
+compile but either run incorrectly, run surprisingly, or be otherwise
+less than ideal. Watch out for these warning signs:
+
+\begin{itemize}
+	\item When Dave mentions a ``pointer to an array'', he nearly
+	      always actually means a ``pointer to the first element of
+	      an array'', but pointers to entire arrays are also a
+	      real concept, even if they are used rarely in practice.
+\end{itemize}
+
+The following are some other hints that may be useful for today:
+
+\begin{itemize}
+	\item When a function is referred to in a manner such as
+	      \lstinline@function(3)@, you can learn more about the
+	      function in section 3 of the Unix manual by typing
+	      \lstinline@man 3 function@.
+	\item The exact data type of an expression is what one would
+	      write to declare a variable for it, without the name of
+	      the variable itself; for example, the type of a pointer
+	      to a function with no formal parameters that returns an
+	      \lstinline@int@ is \lstinline@int (*)(void)@.
+	\item The expressions \lstinline@foo[i]@ and
+	      \lstinline@*(foo + i)@ are equivalent, and either form
+	      can be used to access both fixed and
+	      \lstinline@malloc(3)@'d arrays equally well.
+	\item Whenever the name of an array is used in any expression,
+	      the array is temporarily converted to a pointer to its
+	      first element in a process that is colloquially known as
+	      ``array decay'', except for the expressions
+	      \lstinline@sizeof(array)@ and \lstinline@&array@.
+	\item The only two places where \lstinline@[]@ makes sense are
+	      in the first dimension of an array declaration, where the
+	      compiler fills in the size based on the initialiser, and
+	      in the first dimension of a function parameter, where it
+	      is syntactic sugar for \lstinline@*@.
+\end{itemize}
+
+Questions marked * are probably beyond the scope of the assessment.
+
+\newpage
+
+\section{Declarations, expressions, and data types}
+
+Explain the meanings and the data types of the variables and/or
+expressions below:
+
+\begin{enumerate}[a)]
+\item\lstinline@argc; argv; argv[0]; argv[4];@
+\item\lstinline@int *foo = malloc(5 * sizeof int); foo; &foo; *foo;@
+\item\lstinline@int *foo = malloc(5 * sizeof int); foo[3]; &foo[3];@
+\item\lstinline@int *foo = malloc(5 * sizeof int); foo + 3; *(foo + 3);@
+\item\lstinline@int foo[5]; foo; &foo; *foo;@
+\item\lstinline@int foo[5]; foo[3]; &foo[3];@
+\item\lstinline@int foo[5]; foo + 3; *(foo + 3);@
+\item\lstinline@int foo[3][2] = { { 4, 5 }, { 6, 7 }, { 8, 9 } };@
+\item\lstinline@int foo[5][4]; foo; &foo; *foo;@
+\item\lstinline@int foo[5][4]; foo[3]; &foo[3];@
+\item\lstinline@int foo[5][4]; foo[3][1]; &foo[3][1];@
+\item\lstinline@int foo[5][4]; foo + 3; *(foo + 3);@
+\item\lstinline@int foo[5][4]; *(foo + 3) + 1; *(*(foo + 3) + 1);@
+\item\lstinline@int *foo[5][4], **bar[5][4];@
+\item\lstinline@int (*foo)[5][4], (*bar(void))[5][4];@
+\item[* p)]\lstinline@int *(*foo[5][4])(int bar, int);@
+\item[q)]\lstinline@int foo(float bar[], size_t length);@
+\item[r)]\lstinline@int foo(float bar[][COLS], size_t rows);@
+\item[s)]\lstinline@int foo(float bar[ROWS][COLS]);@
+\item[t)]\lstinline@char *foo = "Hello, world!";@
+\item[u)]\lstinline@char foo[] = "Hello, world!";@
+\item[* v)]\lstinline@struct Point { int x, y; };@
+\item[* w)]\lstinline@struct Point { int x, y; } place;@
+\item[* x)]\lstinline@struct { int x, y; } place = { 13, 420 };@
+\item[y)]\lstinline@typedef struct { int x, y; } Point;@
+\item[z)]\lstinline@typedef struct Point { int x, y; } Point;@
+\item[\textalpha)]\lstinline@typedef struct Foo { char *bar; } Foo;@
+\item[\textbeta)]\lstinline@typedef struct Foo { char bar[9]; } Foo;@
+\item[\textgamma)]\lstinline@foo.a; foo.b->c.d; foo.e[7]->f[6].g;@
+\item[\textdelta)]\lstinline@foo->a; foo->b.c->d; foo->e + 13;@
+\end{enumerate}
+
+\newpage
+
+\section{Evaluating the outputs of \lstinline@printf(3)@ calls}
+
+For each of the questions below, write what would be sent to
+\lstinline@stdout@:
+
+\begin{enumerate}[a)]
+	\item\lstinline@printf("~%d~", 13);@
+	\item\lstinline@printf("~%+d~", 13);@
+	\item\lstinline@printf("~%5d~", 13);@
+	\item\lstinline@printf("~%+5d~", 13);@
+	\item\lstinline@printf("~%-5d~", 13);@
+	\item\lstinline@printf("~%+-5d~", 13);@
+	\item\lstinline@printf("~%05d~", 13);@
+	\item\lstinline@printf("~%+05d~", 13);@
+	\item\lstinline@printf("~%3.9f~", 13.0);@
+	\item\lstinline@printf("~%+3.9f~", 13.0);@
+	\item\lstinline@printf("~%9.3f~", 13.0);@
+	\item\lstinline@printf("~%+9.3f~", 13.0);@
+	\item\lstinline@printf("~%-9.3f~", 13.0);@
+	\item\lstinline@printf("~%+-9.3f~", 13.0);@
+	\item\lstinline@printf("~%09.3f~", 13.0);@
+	\item\lstinline@printf("~%+09.3f~", 13.0);@
+	\item\lstinline@printf("%s,%6s!", "Hello", "world");@
+	\item\lstinline@printf("~%d~", '7' - '0');@
+	\item\lstinline@printf("~%c~", 7 + '0');@
+\end{enumerate}
+
+\newpage
+
+\section{Discussion}
+
+\begin{enumerate}[a)]
+	\item What values can \texttt{fopen(3)} return and why?
+	\item What values can \texttt{fgetc(3)} return and why?
+	\item What values can \texttt{scanf(3)} return and why?
+	\item What values can \texttt{fgets(3)} return and why?
+	\item Why is it incorrect to read a file by looping until
+	      \texttt{feof(3)} returns true?
+	\item How can one distinguish reaching the end of a file from
+	      an I/O error?
+	\item How should a C program handle an I/O error?
+\end{enumerate}
+
+\newpage
+
+\section{\lstinline@struct@ declaration and allocation}
+
+For each of the following descriptions:
+
+\begin{enumerate}[i)]
+	\item Write a suitable type declaration (or set of type
+	      declarations) for representing the data.
+	\item Show how to dynamically allocate the necessary memory,
+	      and initialise any obvious fields.
+\end{enumerate}
+
+Assume that all strings have an upper limit of 168 characters.
+
+(Note: based on your declarations, it should be possible to use and
+manipulate all the information through a single pointer variable.)
+
+\begin{enumerate}[a)]
+	\item A pharmaceutical drug, with a generic name, a trade name,
+	      a year of discovery, a year of approval, a molecular mass
+	      in g/mol, and a half-life in hours.
+	\item A digital audio file, with an artist name, album name,
+	      track name, sampling rate in Hz, and an array of audio
+	      samples, where each sample is an integer. When allocating
+	      and initialising the structure, assume that the integer
+	      variable \lstinline@samples@ exists and contains the
+	      number of samples in the digital audio file.
+	\item A web address, or URL, with a host name, a port number,
+	      a path, an array of fields, and a fragment name. Each
+	      field consists of a name and a value, both of which are
+	      strings, as well as the path. When allocating and
+	      initialising the structure, assume that the integer
+	      variable \lstinline@fields@ exists and contains the
+	      number of fields.
+	\item A text file, consisting of a file name, as well as a
+	      double ended, doubly linked list of lines of text. When
+	      allocating and initialising the structure, assume that
+	      the text file contains no lines. Writing any code to
+	      manipulate the linked list is not necessary.
+\end{enumerate}
+
+\newpage
+
+\section{Pointer diagrams}
+
+Say you have the following declarations:
+
+\begin{lstlisting}
+int x = 13;
+int y[] = { 1, 4, 9 };
+int z[][2] = { 2, 4, 6, 8 };
+int *p = NULL;
+int *q[2] = { &z[0][2], &y[1] };
+int **s;
+int **t[2];
+\end{lstlisting}
+
+For each of the following code snippets, draw a diagram showing all
+pointer relationships created, and state the resulting value of
+\texttt{x}. Assume that the declarations ``reset'' between questions
+--- in other words, the questions are independent of one another.
+
+a)
+
+% s -> p -> x
+% t[0] -> q[1] -> y[1]
+% t[1] -> q[0] -> z[0][2]
+% x = 4 + 6;
+
+\begin{lstlisting}
+s = &p;
+p = &x;
+t[0] = &q[1];
+t[1] = &q[0];
+s[0][0] = **t[0] + **t[1];
+\end{lstlisting}
+
+% t[0] -> p
+% t[1] -> q[0]
+% p -> malloc [int, int]
+% p[0] = y[2];
+% p[1] = &z[0][2] - &z[0][0];
+% (p[0], p[1]) == (9, 2)
+% q[0] -> x
+% x = 2 * 9;
+
+b)
+
+\begin{lstlisting}
+*t = &p;
+t[z[1][0] - 5] = q;
+p = (int *) malloc(2 * sizeof(int));
+*(p + 0) = y[sizeof(z) / sizeof(z[0])];
+*(p + 1) = q[0] - *z;
+q[0] = &x;
+t[1][0][0] = t[0][0][1] * ***t;
+\end{lstlisting}
+
+\end{document}
