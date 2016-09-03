@@ -142,9 +142,9 @@ explain their data types, meanings, and/or effects:
 	\item[x)] \lstinline@int *foo; ... if (!foo) ...@
 	\item[y)] \lstinline@int *foo; ... if (!*foo) ...@
 	\item[z)]\lstinline@argc; argv; argv[0]; argv[4];@
-	\item[\textalpha)]\lstinline@int *foo = malloc(5 * sizeof int); foo; &foo; *foo;@
-	\item[\textbeta)]\lstinline@int *foo = malloc(5 * sizeof int); foo[3]; &foo[3];@
-	\item[\textgamma)]\lstinline@int *foo = malloc(5 * sizeof int); foo + 3; *(foo + 3);@
+	\item[\textalpha)]\lstinline@int *foo = malloc(5 * sizeof(int)); foo; &foo; *foo;@
+	\item[\textbeta)]\lstinline@int *foo = malloc(5 * sizeof(int)); foo[3]; &foo[3];@
+	\item[\textgamma)]\lstinline@int *foo = malloc(5 * sizeof(int)); foo + 3; *(foo + 3);@
 	\item[\textdelta)]\lstinline@int foo[5]; foo; &foo; *foo;@
 	\item[\textepsilon)]\lstinline@int foo[5]; foo[3]; &foo[3];@
 	\item[\textzeta)]\lstinline@int foo[5]; foo + 3; *(foo + 3);@
